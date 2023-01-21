@@ -25,34 +25,45 @@ async def send_welcom_commands(message : types.Message):
 async def send_welcom(massege : types.Message):
     await massege.reply("я ухожу, ухожу красиво")
 
-    @dp.message_handler(commands=['buy'])
-    async def send_buy_command(massege: types.Message):
-        args = massege.get_args()
-        if len(ribov_list) == 0:
-            return await tgbot.send_massege(massege.chat.id,
-                                            "братан прости риба протухла вся, приходи завтра")
-        if not args:
-            return await tgbot.send_message(massege.chat.id,
-                                             f" братан есть сейчас только {len(ribov_list)} рибов"
-                                             f"Сколько рибов вы хотите")
+@dp.message_handler(commands=['buy'])
+async def send_buy_command(massege: types.Message):
+    args = massege.get_args()
+    if len(ribov_list) == 0:
+        return await tgbot.send_message(massege.chat.id,
+                                        "братан прости риба протухла вся, приходи завтра")
+    if not args:
+        return await tgbot.send_message(massege.chat.id,
+                                         f" братан есть сейчас только {len(ribov_list)} рибов"
+                                         f"Сколько рибов вы хотите")
+    else:
+        if args.isdigit():
+            args = int(args)
+            if args > len(ribov_list):
+                return await tgbot.send_message(massege.chat.id,
+                                                "слишком много риб хочешь, нет столько")
+            else:
+                for i in range(args):
+                    ribov_list.pop()
+                return await tgbot.send_message(massege.chat.id, f"смари, есть еще {len(ribov_list)} рибов")
         else:
-            if args.isdigit():
-                args = int(args)
-                if args > len(ribov_list):
-                    return await tgbot.send_massege(massege.chat.id,
-                                                    "слишком много риб хочешь, нет столько")
-                else:
-                    for i in range(args):
-                        ribov_list.pop()
-                        return await tgbot.send_massege(massege.chat.id,
-                                                        f"смари, есть еще {len(ribov_list)}"
-                                                        f"рибов")
-                    else:
-                        return await tgbot.send_massege(massege.chat.id,"еще раз скажи сколько рибов")
+            return await tgbot.send_message(massege.chat.id,"еще раз скажи сколько рибов")
 
-
-
-
+@dp.message_handler(commands=['add'])
+async def send_add_command(massege: types.Message):
+ print(massege.chat.id)
+ args = massege.get_args()
+ if massege.chat.id != 841325577:
+     return await tgbot.send_message(massege.chat.id, f"брат ти не продавец")
+ if not args:
+    return await tgbot.send_message(massege.chat.id, f"сейчас есть {len(ribov_list)} рибов")
+ else:
+     if args.isdigit():
+         args = int(args)
+         for i in range(args):
+             ribov_list.append(i)
+         return await tgbot.send_message(massege.chat.id, f"{len(ribov_list)} рабов имеется.")
+     else:
+         return await tgbot.send_message(massege.chat.id, "Ой ты ввёл неверное число, сотри и введи нормально!!!")
 
 
 @dp.message_handler(commands=['print'])
@@ -61,9 +72,6 @@ async def send_welcom(massege : types.Message):
                         " /||\ \n"
                         "/||||\ \n"
                         "   ||   \n")
-
-
-
 
 
 
